@@ -1,10 +1,22 @@
 package service;
 
+import com.solera.bootcamp.betos.service.WorkshopService;
 import org.junit.jupiter.api.Test;
+import service.*;
 
-public class workshopServiceTest {
+class workShopServiceTest{
+
+    void testWorkShopService(){
+        WorkshopService workshop = new WorkshopService();
+        workshop.createWorkshop();
+    }
 
     @Test
-    void
+    void validateProductEqualsTest(){
+        //creamos instancias e inicializamos el objeto
+        WorkshopService workshop = new WorkshopService();
+        assertNotEquals
+
+    }
 
 }

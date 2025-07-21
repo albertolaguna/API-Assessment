@@ -14,27 +14,27 @@ public class PartService {
         this.partRepository = partRepository;
     }
 
-    public void createWorkshop(Part part) {
+    public void createPart(Part part) {
         partRepository.save(part);
     }
 
-    public List<Part> getAllWorkshops() {
+    public List<Part> getAllParts() {
         return (List<Part>) partRepository.findAll();
     }
 
-    public Part getWorkshopById(Long id) {
+    public Part getPartById(Long id) {
         return partRepository.findById(id)
                 .orElseThrow(() -> new EmptyResultDataAccessException(0));
     }
 
-    public void deleteWorkshopById(Long id) {
+    public void deletePartById(Long id) {
         if (!partRepository.existsById(id)) {
             throw new EmptyResultDataAccessException(0);
         }
         partRepository.deleteById(id);
     }
 
-    public Part updateWorkshopById(Long id, Part part) {
+    public Part updatePartById(Long id, Part part) {
         if (!partRepository.existsById(id)) {
             throw new EmptyResultDataAccessException(0);
         }
