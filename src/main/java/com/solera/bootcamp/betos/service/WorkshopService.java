@@ -36,11 +36,11 @@ public class WorkshopService {
         workshopRepository.deleteById(id);
     }
 
-    public Workshop updateWorkshopById(Long id, Workshop workshop) {
+    public void updateWorkshopById(Long id, Workshop workshop) {
         if (!workshopRepository.existsById(id)) {
             throw new EmptyResultDataAccessException(0);
         }
         workshop.setId(id);
-        return workshopRepository.save(workshop);
+        workshopRepository.save(workshop);
     }
 }
