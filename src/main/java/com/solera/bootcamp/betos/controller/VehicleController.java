@@ -1,9 +1,13 @@
 package com.solera.bootcamp.betos.controller;
 
+import com.solera.bootcamp.betos.dto.CustomResponse;
 import com.solera.bootcamp.betos.model.Vehicle;
 import com.solera.bootcamp.betos.service.VehicleService;
-import org.springframework.dao.EmptyResultDataAccessException;
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,9 +23,13 @@ public class VehicleController {
     }
 
     @PostMapping
-    public ResponseEntity<Vehicle> createVehicle(@RequestBody Vehicle vehicle) {
-        vehicleService.createVehicle(vehicle);
-        return ResponseEntity.ok(vehicle);
+    public ResponseEntity<?> createVehicle(@RequestBody Vehicle vehicle) {
+        try {
+            vehicleService.createVehicle(vehicle);
+            return ResponseEntity.status(HttpStatus.CREATED).body(vehicle);
+        } catch (EntityExistsException | IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CustomResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
+        }
     }
 
     @GetMapping
@@ -30,31 +38,33 @@ public class VehicleController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Vehicle> getVehicleById(@PathVariable Long id) {
+    public ResponseEntity<?> getVehicleById(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(vehicleService.getVehicleById(id));
-        } catch (EmptyResultDataAccessException e) {
-            return ResponseEntity.notFound().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new CustomResponse(HttpStatus.NOT_FOUND.value(), e.getMessage()));
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteVehicleById(@PathVariable Long id) {
+    public ResponseEntity<?> deleteVehicleById(@PathVariable Long id) {
         try {
             vehicleService.deleteVehicleById(id);
-            return ResponseEntity.noContent().build();
-        } catch (EmptyResultDataAccessException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.OK).body(new CustomResponse(HttpStatus.OK.value(), "Vehicle has been deleted successfully"));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new CustomResponse(HttpStatus.NOT_FOUND.value(), e.getMessage()));
+        } catch (IllegalStateException e){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new CustomResponse(HttpStatus.CONFLICT.value(), e.getMessage()));
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Vehicle> updateVehicle(@PathVariable Long id, @RequestBody Vehicle vehicle) {
+    public ResponseEntity<?> updateVehicle(@PathVariable Long id, @RequestBody Vehicle vehicle) {
         try {
             vehicleService.updateVehicleById(id, vehicle);
             return ResponseEntity.ok(vehicle);
-        } catch (EmptyResultDataAccessException e) {
-            return ResponseEntity.notFound().build();
+        } catch (EntityNotFoundException | IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new CustomResponse(HttpStatus.NOT_FOUND.value(), e.getMessage()));
         }
     }
 }

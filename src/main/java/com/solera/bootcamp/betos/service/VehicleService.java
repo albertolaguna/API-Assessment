@@ -1,13 +1,10 @@
 package com.solera.bootcamp.betos.service;
 
-import com.solera.bootcamp.betos.model.Part;
 import com.solera.bootcamp.betos.model.Vehicle;
 import com.solera.bootcamp.betos.model.Workshop;
-import com.solera.bootcamp.betos.repository.PartRepository;
 import com.solera.bootcamp.betos.repository.VehicleRepository;
-import com.solera.bootcamp.betos.repository.WorkshopRepository;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,20 +13,38 @@ import java.util.List;
 public class VehicleService {
 
     private final VehicleRepository vehicleRepository;
-    private final PartRepository partRepository;
 
-    public VehicleService(VehicleRepository vehicleRepository, PartRepository partRepository) {
+    public VehicleService(VehicleRepository vehicleRepository) {
         this.vehicleRepository = vehicleRepository;
-        this.partRepository = partRepository;
     }
 
     public void createVehicle(Vehicle vehicle) {
-        if (vehicle.getParts() != null) {
-            List<Part> managedParts = vehicle.getParts().stream()
-                    .map(part -> partRepository.findById(part.getId())
-                            .orElseThrow(() -> new EntityNotFoundException("Part not found: " + part.getId())))
-                    .toList();
-            vehicle.setParts(managedParts);
+        if (vehicle == null) {
+            throw new IllegalArgumentException("Workshop body cannot be empty");
+        }
+        if (vehicle.getModel() == null || vehicle.getModel().trim().isEmpty()) {
+            throw new IllegalArgumentException("Model is mandatory");
+        }
+        vehicle.setModel(vehicle.getModel().trim());
+        if (vehicle.getBrand() == null || vehicle.getBrand().trim().isEmpty()) {
+            throw new IllegalArgumentException("Brand is mandatory");
+        }
+        vehicle.setBrand(vehicle.getBrand().trim());
+        if (vehicle.getModelYear() == null) {
+            throw new IllegalArgumentException("Model Year is mandatory");
+        }
+        vehicle.setModelYear(vehicle.getModelYear());
+        if (vehicle.getColor() != null) {
+            vehicle.setColor(vehicle.getColor().trim());
+        }
+        if (vehicle.getVin() != null) {
+            vehicle.setVin(vehicle.getVin().trim());
+        }
+        if (vehicle.getId() != null) {
+            if (vehicleRepository.findById(vehicle.getId()).isPresent()) {
+                throw new EntityExistsException("Vehicle ID already exists");
+            }
+            vehicle.setId(null);
         }
         vehicleRepository.save(vehicle);
     }
@@ -44,8 +59,10 @@ public class VehicleService {
     }
 
     public void deleteVehicleById(Long id) {
-        if (!vehicleRepository.existsById(id)) {
-            throw new EntityNotFoundException("Vehicle not found");
+        Vehicle vehicleToDelete = vehicleRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Vehicle not found"));
+        if (vehicleToDelete.getParts() != null && !vehicleToDelete.getParts().isEmpty()) {
+            throw new IllegalStateException("The vehicle cannot be deleted due at least one part is associated to it");
         }
         vehicleRepository.deleteById(id);
     }

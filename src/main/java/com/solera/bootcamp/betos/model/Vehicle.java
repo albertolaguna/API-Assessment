@@ -3,6 +3,8 @@ package com.solera.bootcamp.betos.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,7 +27,7 @@ public class Vehicle {
     private String color;
     private String vin;
     @ManyToOne
-    @JoinColumn(name = "workshop_id", nullable = false)
+    @JoinColumn(name = "workshop_id")
     @JsonBackReference
     private Workshop workshop;
 
