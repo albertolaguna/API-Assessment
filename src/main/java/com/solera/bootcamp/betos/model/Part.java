@@ -21,7 +21,7 @@ public class Part {
     private String description;
 
     @ManyToMany
-    @JoinTable(name = "vehicle",
+    @JoinTable(name = "vehicle_parts_list",
             joinColumns = @JoinColumn(name = "vehicleId"),
             inverseJoinColumns = @JoinColumn(name = "partId"))
     private List<Vehicle> vehicles;
