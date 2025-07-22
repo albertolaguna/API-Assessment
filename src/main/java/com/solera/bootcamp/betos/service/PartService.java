@@ -36,11 +36,11 @@ public class PartService {
         partRepository.deleteById(id);
     }
 
-    public Part updatePartById(Long id, Part part) {
+    public void updatePartById(Long id, Part part) {
         if (!partRepository.existsById(id)) {
             throw new EmptyResultDataAccessException(0);
         }
         part.setId(id);
-        return partRepository.save(part);
+        partRepository.save(part);
     }
 }

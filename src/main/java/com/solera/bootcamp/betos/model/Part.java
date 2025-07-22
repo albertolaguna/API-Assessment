@@ -1,5 +1,6 @@
 package com.solera.bootcamp.betos.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,9 +21,7 @@ public class Part {
     private String name;
     private String description;
 
-    @ManyToMany
-    @JoinTable(name = "vehicle_parts_list",
-            joinColumns = @JoinColumn(name = "vehicleId"),
-            inverseJoinColumns = @JoinColumn(name = "partId"))
+    @ManyToMany(mappedBy = "parts")
+    @JsonIgnore
     private List<Vehicle> vehicles;
 }

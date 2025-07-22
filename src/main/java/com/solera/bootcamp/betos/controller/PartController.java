@@ -52,8 +52,8 @@ public class PartController {
     @PutMapping("/{id}")
     public ResponseEntity<Part> updatePart(@PathVariable Long id, @RequestBody Part part) {
         try {
-            Part updatedPart = partService.updatePartById(id, part);
-            return ResponseEntity.ok(updatedPart);
+            partService.updatePartById(id, part);
+            return ResponseEntity.ok(part);
         } catch (EmptyResultDataAccessException e) {
             return ResponseEntity.notFound().build();
         }

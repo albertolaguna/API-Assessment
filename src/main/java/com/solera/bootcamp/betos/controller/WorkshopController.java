@@ -25,7 +25,7 @@ public class WorkshopController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Workshop>> GetAllWorkshop() {
+    public ResponseEntity<List<Workshop>> getAllWorkshop() {
         return ResponseEntity.ok(workshopService.getAllWorkshops());
 
     }
@@ -52,8 +52,8 @@ public class WorkshopController {
     @PutMapping("/{id}")
     public ResponseEntity<Workshop> updateWorkshop(@PathVariable Long id, @RequestBody Workshop workshop) {
         try {
-            Workshop updatedWorkshop = workshopService.updateWorkshopById(id, workshop);
-            return ResponseEntity.ok(updatedWorkshop);
+            workshopService.updateWorkshopById(id, workshop);
+            return ResponseEntity.ok(workshop);
         } catch (EmptyResultDataAccessException e) {
             return ResponseEntity.notFound().build();
         }

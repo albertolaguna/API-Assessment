@@ -1,13 +1,11 @@
 package com.solera.bootcamp.betos.model;
 
-
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import java.util.List;
 
@@ -22,8 +20,8 @@ public class Workshop {
     private Long id;
     private String name;
     private String description;
-    // @ManyToMany @Fetch(FetchMode.JOIN)
-    // @OneToMany(fetch = FetchType.EAGER, mappedBy = "workshop", cascade = CascadeType.ALL)
-    @OneToMany(mappedBy = "workshop")
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "workshop", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Vehicle> vehicles;
 }

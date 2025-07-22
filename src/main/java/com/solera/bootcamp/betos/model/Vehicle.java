@@ -1,5 +1,6 @@
 package com.solera.bootcamp.betos.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -24,10 +25,13 @@ public class Vehicle {
     private String color;
     private String vin;
     @ManyToOne
-    @JoinColumn(name = "workshop_id", nullable = true)
-    @JsonIgnore
+    @JoinColumn(name = "workshop_id", nullable = false)
+    @JsonBackReference
     private Workshop workshop;
 
-    @ManyToMany(targetEntity = Part.class, mappedBy = "vehicles")
+    @ManyToMany
+    @JoinTable(name = "vehicle_parts_list",
+            joinColumns = @JoinColumn(name = "vehicle_id"),
+            inverseJoinColumns = @JoinColumn(name = "part_id"))
     private List<Part> parts;
 }
